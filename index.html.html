@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shine Capital Fund I — Fund Economics</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #fff; color: #1a1a1a; padding: 32px 24px; max-width: 860px; margin: 0 auto; }
+    input, select { font-family: inherit; font-size: 14px; border: 0.5px solid #ccc; border-radius: 8px; padding: 8px 12px; width: 100%; color: #1a1a1a; background: #fff; }
+    input:focus, select:focus { outline: 2px solid #0D7A2E; border-color: #0D7A2E; }
+    select { cursor: pointer; }
+    .tabs { display: flex; gap: 0; border-bottom: 0.5px solid #e0e0e0; margin-bottom: 1.5rem; }
+    .tab { padding: 10px 20px; font-size: 14px; font-weight: 400; color: #666; cursor: pointer; border-bottom: 2px solid transparent; background: none; border-top: none; border-left: none; border-right: none; }
+    .tab.active { color: #0D7A2E; font-weight: 500; border-bottom: 2px solid #0D7A2E; }
+    .tab:hover:not(.active) { color: #1a1a1a; }
+    .panel { display: none; }
+    .panel.active { display: block; }
+    .lbl { font-size: 13px; color: #666; margin-bottom: 4px; }
+    .input-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 1.5rem; align-items: end; }
+    .input-group { display: flex; flex-direction: column; }
+    .metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 1.5rem; }
+    .metric { background: #f5f5f5; border-radius: 8px; padding: 1rem; }
+    .metric.shine { background: #EBF29A; }
+    .metric-label { font-size: 12px; color: #666; margin-bottom: 4px; }
+    .metric.shine .metric-label { color: #3A6010; }
+    .metric-value { font-size: 22px; font-weight: 500; color: #1a1a1a; }
+    .metric.shine .metric-value { color: #0D7A2E; }
+    .metric-sub { font-size: 12px; color: #888; margin-top: 2px; }
+    .metric.shine .metric-sub { color: #5CA040; }
+    .table-wrap { border: 0.5px solid #e0e0e0; border-radius: 12px; overflow: hidden; margin-bottom: 1.5rem; }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    th { font-size: 12px; font-weight: 500; color: #666; text-align: left; padding: 10px 14px; background: #f5f5f5; border-bottom: 0.5px solid #e0e0e0; }
+    td { padding: 10px 14px; border-bottom: 0.5px solid #e0e0e0; color: #1a1a1a; }
+    tr:last-child td { border-bottom: none; }
+    .total-row td { font-weight: 500; background: #f5f5f5; }
+    .right { text-align: right; }
+    .section-title { font-size: 12px; font-weight: 500; color: #888; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.05em; }
+    .part-tag { font-size: 11px; color: #5CA040; background: #EBF29A; padding: 3px 8px; border-radius: 8px; font-weight: 500; white-space: nowrap; }
+    .badge-up { display: inline-block; font-size: 12px; padding: 2px 8px; border-radius: 8px; background: #EBF29A; color: #3A6010; }
+    .badge-down { display: inline-block; font-size: 12px; padding: 2px 8px; border-radius: 8px; background: #FCEBEB; color: #A32D2D; }
+    .legend { display: flex; gap: 16px; font-size: 12px; color: #666; margin-bottom: 10px; }
+    .legend-dot { width: 10px; height: 10px; border-radius: 2px; display: inline-block; margin-right: 4px; vertical-align: middle; }
+    .note-box { padding: 12px 14px; border-radius: 8px; font-size: 13px; margin-bottom: 1rem; }
+    .note-green { background: #EBF29A; color: #3A6010; }
+    .note-green strong { color: #0D7A2E; }
+    .invested-row { display: none; }
+    .invested-row.show { display: flex; flex-direction: column; }
+    details { border: 0.5px solid #e0e0e0; border-radius: 12px; margin-bottom: 1.5rem; overflow: hidden; }
+    details summary { padding: 12px 16px; font-size: 13px; font-weight: 500; color: #1a1a1a; cursor: pointer; background: #f5f5f5; list-style: none; display: flex; align-items: center; justify-content: space-between; }
+    details summary::-webkit-details-marker { display: none; }
+    details summary::after { content: '+'; font-size: 16px; color: #888; }
+    details[open] summary::after { content: '−'; }
+    details[open] summary { border-bottom: 0.5px solid #e0e0e0; }
+    .recon-body { padding: 16px; }
+    .recon-row { display: flex; justify-content: space-between; align-items: baseline; padding: 7px 0; border-bottom: 0.5px solid #e0e0e0; font-size: 13px; }
+    .recon-row:last-child { border-bottom: none; }
+    .recon-label { color: #666; }
+    .recon-value { font-weight: 500; color: #1a1a1a; font-variant-numeric: tabular-nums; }
+    .recon-match { display: flex; align-items: center; gap: 8px; padding: 10px 14px; background: #EBF29A; border-radius: 8px; margin-top: 12px; font-size: 13px; color: #3A6010; font-weight: 500; }
+    footer { margin-top: 3rem; padding-top: 1rem; border-top: 0.5px solid #e0e0e0; font-size: 12px; color: #aaa; }
+  </style>
+</head>
+<body>
+
+  <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:1.5rem;">
+    <div style="display:flex; align-items:center; gap:12px;">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <line x1="12" y1="2" x2="12" y2="22" stroke="#0D7A2E" stroke-width="1.5"/>
+        <line x1="2" y1="12" x2="22" y2="12" stroke="#0D7A2E" stroke-width="1.5"/>
+        <line x1="4.93" y1="4.93" x2="19.07" y2="19.07" stroke="#0D7A2E" stroke-width="1.5"/>
+        <line x1="19.07" y1="4.93" x2="4.93" y2="19.07" stroke="#0D7A2E" stroke-width="1.5"/>
+      </svg>
+      <div>
+        <p style="font-size:16px; font-weight:500; margin:0;">Shine Capital Fund I</p>
+        <p style="font-size:12px; color:#888; margin:2px 0 0;">Fund economics · fiscal year 2024 · all inputs editable</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('fee', this)">Fee calculator</button>
+    <button class="tab" onclick="showTab('waterfall', this)">Distribution waterfall</button>
+    <button class="tab" onclick="showTab('portfolio', this)">Portfolio snapshot</button>
+  </div>
+
+  <!-- TAB 1: FEE CALCULATOR -->
+  <div id="tab-fee" class="panel active">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.25rem;">
+      <p style="font-size:13px; color:#888; margin:0;">Adjust any input to recalculate.</p>
+      <span class="part-tag">Part 3 Q1 · Part 4 Q1</span>
+    </div>
+    <div class="input-row">
+      <div class="input-group">
+        <span class="lbl">Fee basis</span>
+        <select id="feeBasis" onchange="setFeeBasis(this.value)">
+          <option value="committed">Committed capital (per LPA)</option>
+          <option value="invested">Invested capital</option>
+        </select>
+      </div>
+      <div class="input-group">
+        <span class="lbl">Total capital commitments</span>
+        <input type="text" id="commitments" data-raw="50000000" data-type="dollar" data-calc="fee" />
+      </div>
+      <div class="input-group">
+        <span class="lbl">Quarterly fee rate</span>
+        <input type="text" id="feeRate" data-raw="0.5" data-type="percent" data-decimals="2" data-calc="fee" />
+      </div>
+      <div class="input-group">
+        <span class="lbl">Partial Q1 days (out of 90)</span>
+        <input type="text" id="q1Days" data-raw="60" data-type="days" data-calc="fee" />
+      </div>
+      <div class="input-group invested-row" id="invested-input">
+        <span class="lbl">Capital deployed to date</span>
+        <input type="text" id="invested" data-raw="10000000" data-type="dollar" data-calc="fee" />
+      </div>
+    </div>
+    <div class="metrics" id="fee-metrics"></div>
+    <p class="section-title">Quarter-by-quarter breakdown</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Quarter</th><th>Period</th><th>Days</th><th>Proration</th><th class="right">Fee</th></tr></thead>
+        <tbody id="fee-tbody"></tbody>
+      </table>
+    </div>
+    <details id="recon-details">
+      <summary>Reconciliation check</summary>
+      <div class="recon-body" id="recon-body"></div>
+    </details>
+    <p style="font-size:12px; color:#888;">Formula: fee basis × quarterly rate × (days ÷ 90). Q1 prorated per LPA; Q2–Q4 at 1.0×.</p>
+  </div>
+
+  <!-- TAB 2: DISTRIBUTION WATERFALL -->
+  <div id="tab-waterfall" class="panel">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.25rem;">
+      <p style="font-size:13px; color:#888; margin:0;">Adjust any input to recalculate.</p>
+      <span class="part-tag">Part 3 Q2</span>
+    </div>
+    <div class="input-row">
+      <div class="input-group">
+        <span class="lbl">Total distribution</span>
+        <input type="text" id="distTotal" data-raw="12000000" data-type="dollar" data-calc="waterfall" />
+      </div>
+      <div class="input-group">
+        <span class="lbl">LP contributed capital</span>
+        <input type="text" id="lpCapital" data-raw="6000000" data-type="dollar" data-calc="waterfall" />
+      </div>
+      <div class="input-group">
+        <span class="lbl">Preferred return rate</span>
+        <input type="text" id="prefReturn" data-raw="8" data-type="percent" data-decimals="1" data-calc="waterfall" />
+      </div>
+    </div>
+    <div class="metrics" id="wf-summary"></div>
+    <p class="section-title">LP vs GP by tier</p>
+    <div class="legend">
+      <span><span class="legend-dot" style="background:#0D7A2E;"></span>LP</span>
+      <span><span class="legend-dot" style="background:#B8D468;"></span>GP (carry)</span>
+    </div>
+    <div style="position:relative; width:100%; height:160px; margin-bottom:1.25rem;">
+      <canvas id="wf-chart" role="img" aria-label="Stacked horizontal bar chart showing LP and GP allocations across three waterfall tiers.">Waterfall by tier.</canvas>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Tier</th><th>Rule</th><th class="right">LP receives</th><th class="right">GP receives</th></tr></thead>
+        <tbody id="wf-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- TAB 3: PORTFOLIO SNAPSHOT -->
+  <div id="tab-portfolio" class="panel">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+      <p style="font-size:13px; color:#888; margin:0;">Corrected Exhibit A — errors from Part 1 restated here.</p>
+      <span class="part-tag">Part 1 support</span>
+    </div>
+    <div class="metrics">
+      <div class="metric"><div class="metric-label">Total cost basis</div><div class="metric-value">$10.0M</div></div>
+      <div class="metric"><div class="metric-label">Total fair value</div><div class="metric-value">$11.0M</div></div>
+      <div class="metric shine"><div class="metric-label">Net unrealized gain</div><div class="metric-value">+$1.0M</div></div>
+      <div class="metric shine"><div class="metric-label">Portfolio MOIC</div><div class="metric-value">1.10×</div><div class="metric-sub">point-in-time · no time weighting</div></div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Company</th><th>Instrument</th><th class="right">Cost</th><th class="right">Fair value</th><th class="right">Unrealized</th><th class="right">MOIC</th></tr></thead>
+        <tbody>
+          <tr><td>Company A</td><td style="color:#888">Series A Preferred</td><td class="right">$4,000,000</td><td class="right">$6,000,000</td><td class="right"><span class="badge-up">+$2,000,000</span></td><td class="right" style="color:#0D7A2E;font-weight:500">1.50×</td></tr>
+          <tr><td>Company B</td><td style="color:#888">Series A Preferred</td><td class="right">$5,000,000</td><td class="right">$4,000,000</td><td class="right"><span class="badge-down">−$1,000,000</span></td><td class="right" style="color:#A32D2D;font-weight:500">0.80×</td></tr>
+          <tr><td>Company C</td><td style="color:#888">SAFE</td><td class="right">$1,000,000</td><td class="right">$1,000,000</td><td class="right" style="color:#888">—</td><td class="right">1.00×</td></tr>
+          <tr class="total-row"><td colspan="2">Total</td><td class="right">$10,000,000</td><td class="right">$11,000,000</td><td class="right"><span class="badge-up">+$1,000,000</span></td><td class="right" style="color:#0D7A2E">1.10×</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note-box note-green">
+      <strong>Errors corrected from Part 1:</strong> Company B unrealized restated from +$1,000,000 to −$1,000,000 (wrong sign — FV below cost). Total FV restated from $11,500,000 to $11,000,000. Total unrealized restated from $2,000,000 to $1,000,000.
+    </div>
+  </div>
+
+  <footer>Shine Capital Fund I · Prepared by Jared Slovic · Confidential</footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+  <script>
+    var RAW = {};
+    var wfChart = null;
+    var feeBasis = 'committed';
+
+    function fmtOut(n) {
+      if (n === 0) return '$0';
+      var abs = Math.abs(n), sign = n < 0 ? '-' : '';
+      if (abs >= 1e6) return sign + '$' + (abs/1e6).toFixed(3).replace(/\.?0+$/,'') + 'M';
+      return sign + '$' + Math.round(abs).toLocaleString();
+    }
+
+    function fmtDisplay(id) {
+      var el = document.getElementById(id); if (!el) return '';
+      var t = el.getAttribute('data-type'), v = RAW[id];
+      if (t === 'dollar') return '$' + Math.round(v).toLocaleString('en-US');
+      if (t === 'percent') return v.toFixed(parseInt(el.getAttribute('data-decimals')||'2')) + '%';
+      return Math.round(v) + '';
+    }
+
+    function initInput(id) {
+      var el = document.getElementById(id); if (!el) return;
+      RAW[id] = parseFloat(el.getAttribute('data-raw')) || 0;
+      el.value = fmtDisplay(id);
+      el.addEventListener('focus', function(){ this.value = String(RAW[id]); });
+      el.addEventListener('input', function(){
+        RAW[id] = parseFloat(String(this.value).replace(/[^0-9.-]/g,'')) || 0;
+        runCalc(id);
+      });
+      el.addEventListener('blur', function(){
+        RAW[id] = parseFloat(String(this.value).replace(/[^0-9.-]/g,'')) || 0;
+        this.value = fmtDisplay(id);
+        runCalc(id);
+      });
+    }
+
+    function runCalc(id) {
+      var el = document.getElementById(id);
+      var c = el ? el.getAttribute('data-calc') : '';
+      if (c === 'fee') calcFee();
+      if (c === 'waterfall') calcWaterfall();
+    }
+
+    function showTab(name, btn) {
+      document.querySelectorAll('.panel').forEach(function(p){ p.classList.remove('active'); });
+      document.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('active'); });
+      document.getElementById('tab-' + name).classList.add('active');
+      btn.classList.add('active');
+      if (name === 'fee') calcFee();
+      if (name === 'waterfall') setTimeout(calcWaterfall, 0);
+    }
+
+    function setFeeBasis(val) {
+      feeBasis = val;
+      document.getElementById('invested-input').classList.toggle('show', val === 'invested');
+      calcFee();
+    }
+
+    function calcFee() {
+      var C   = RAW['commitments'] || 0;
+      var r   = (RAW['feeRate'] || 0) / 100;
+      var d   = RAW['q1Days'] || 0;
+      var inv = RAW['invested'] || 0;
+      var basis = feeBasis === 'committed' ? C : inv;
+      var fullQ = basis * r;
+      var q1    = fullQ * (d / 90);
+      var total = q1 + fullQ * 3;
+      var fullYear    = basis * r * 4;
+      var q1Shortfall = fullQ * (1 - d/90);
+      var method2     = fullYear - q1Shortfall;
+      var match       = Math.abs(total - method2) < 0.01;
+
+      document.getElementById('fee-metrics').innerHTML =
+        '<div class="metric"><div class="metric-label">Full quarter fee</div><div class="metric-value">' + fmtOut(fullQ) + '</div><div class="metric-sub">' + (r*100).toFixed(2) + '% × ' + (feeBasis==='committed'?'commitments':'deployed') + '</div></div>' +
+        '<div class="metric"><div class="metric-label">Q1 prorated fee</div><div class="metric-value">' + fmtOut(q1) + '</div><div class="metric-sub">' + Math.round(d) + '/90 days</div></div>' +
+        '<div class="metric shine"><div class="metric-label">Total 2024 fee</div><div class="metric-value">' + fmtOut(total) + '</div><div class="metric-sub">Q1 partial + Q2–Q4 full</div></div>';
+
+      var rows = [
+        { q:'Q1 2024', p:'Feb 1 – Mar 31', days:d, pro:d/90, fee:q1 },
+        { q:'Q2 2024', p:'Apr 1 – Jun 30', days:90, pro:1, fee:fullQ },
+        { q:'Q3 2024', p:'Jul 1 – Sep 30', days:90, pro:1, fee:fullQ },
+        { q:'Q4 2024', p:'Oct 1 – Dec 31', days:90, pro:1, fee:fullQ },
+      ];
+      document.getElementById('fee-tbody').innerHTML = rows.map(function(row){
+        return '<tr><td>'+row.q+'</td><td style="color:#888">'+row.p+'</td><td>'+Math.round(row.days)+'</td><td>'+(row.pro*100).toFixed(1)+'%</td><td class="right">'+fmtOut(row.fee)+'</td></tr>';
+      }).join('') + '<tr class="total-row"><td colspan="4">Total annual fee</td><td class="right">'+fmtOut(total)+'</td></tr>';
+
+      document.getElementById('recon-body').innerHTML =
+        '<p style="font-size:12px;color:#888;margin:0 0 12px">Two independent methods — both must reach the same total.</p>' +
+        '<p style="font-size:12px;font-weight:500;color:#1a1a1a;margin:0 0 8px">Method 1 — quarterly buildup</p>' +
+        rows.map(function(row){
+          return '<div class="recon-row"><span class="recon-label">'+row.q+' ('+Math.round(row.days)+' days, '+(row.pro*100).toFixed(1)+'% proration)</span><span class="recon-value">'+fmtOut(row.fee)+'</span></div>';
+        }).join('') +
+        '<div class="recon-row" style="font-weight:500"><span class="recon-label">Method 1 total</span><span class="recon-value" style="color:#0D7A2E">'+fmtOut(total)+'</span></div>' +
+        '<div style="margin:16px 0 8px;border-top:0.5px solid #e0e0e0"></div>' +
+        '<p style="font-size:12px;font-weight:500;color:#1a1a1a;margin:0 0 8px">Method 2 — annual formula with Q1 adjustment</p>' +
+        '<div class="recon-row"><span class="recon-label">Full year fee (basis × '+(r*100).toFixed(2)+'% × 4 quarters)</span><span class="recon-value">'+fmtOut(fullYear)+'</span></div>' +
+        '<div class="recon-row"><span class="recon-label">Less: Q1 shortfall from proration ('+(100 - d/90*100).toFixed(1)+'% of '+fmtOut(fullQ)+')</span><span class="recon-value">− '+fmtOut(q1Shortfall)+'</span></div>' +
+        '<div class="recon-row" style="font-weight:500"><span class="recon-label">Method 2 total</span><span class="recon-value" style="color:#0D7A2E">'+fmtOut(method2)+'</span></div>' +
+        '<div class="recon-match">&#10003; Both methods confirm: ' + fmtOut(total) + (match ? '' : ' — discrepancy detected') + '</div>';
+    }
+
+    function calcWaterfall() {
+      var dist = RAW['distTotal'] || 0;
+      var cap  = RAW['lpCapital'] || 0;
+      var pref = (RAW['prefReturn'] || 0) / 100;
+      var rem  = dist;
+      var t1Lp = Math.min(cap, rem);      rem -= t1Lp;
+      var t2Lp = Math.min(cap*pref, rem); rem -= t2Lp;
+      var t3Lp = rem*0.8, t3Gp = rem*0.2;
+      var lpTot = t1Lp+t2Lp+t3Lp, gpTot = t3Gp;
+
+      document.getElementById('wf-summary').innerHTML =
+        '<div class="metric"><div class="metric-label">LP total</div><div class="metric-value">'+fmtOut(lpTot)+'</div><div class="metric-sub">'+((lpTot/dist)*100).toFixed(1)+'% of distribution</div></div>' +
+        '<div class="metric"><div class="metric-label">GP carry</div><div class="metric-value">'+fmtOut(gpTot)+'</div><div class="metric-sub">'+((gpTot/dist)*100).toFixed(1)+'% of distribution</div></div>' +
+        '<div class="metric shine"><div class="metric-label">LP return multiple</div><div class="metric-value">'+(lpTot/cap).toFixed(2)+'×</div><div class="metric-sub">on '+fmtOut(cap)+' called capital</div></div>';
+
+      document.getElementById('wf-tbody').innerHTML = [
+        { label:'Tier 1', rule:'100% LP — return of capital', lp:t1Lp, gp:0 },
+        { label:'Tier 2', rule:'100% LP — '+(pref*100).toFixed(0)+'% preferred return', lp:t2Lp, gp:0 },
+        { label:'Tier 3', rule:'80% LP / 20% GP — carried interest', lp:t3Lp, gp:t3Gp },
+      ].map(function(t){
+        return '<tr><td style="font-weight:500">'+t.label+'</td><td style="font-size:13px;color:#888">'+t.rule+'</td><td class="right">'+fmtOut(t.lp)+'</td><td class="right">'+(t.gp>0?fmtOut(t.gp):'<span style="color:#888">—</span>')+'</td></tr>';
+      }).join('') + '<tr class="total-row"><td colspan="2">Total distributed</td><td class="right">'+fmtOut(lpTot)+'</td><td class="right">'+fmtOut(gpTot)+'</td></tr>';
+
+      var canvas = document.getElementById('wf-chart'); if (!canvas) return;
+      if (wfChart) { wfChart.destroy(); wfChart = null; }
+      wfChart = new Chart(canvas, {
+        type:'bar',
+        data:{ labels:['Tier 1','Tier 2','Tier 3'], datasets:[
+          { label:'LP', data:[t1Lp,t2Lp,t3Lp], backgroundColor:'#0D7A2E', borderRadius:3 },
+          { label:'GP (carry)', data:[0,0,t3Gp], backgroundColor:'#B8D468', borderRadius:3 }
+        ]},
+        options:{ indexAxis:'y', responsive:true, maintainAspectRatio:false,
+          plugins:{ legend:{display:false}, tooltip:{callbacks:{label:function(ctx){return ' '+ctx.dataset.label+': '+fmtOut(ctx.raw);}}} },
+          scales:{
+            x:{ stacked:true, ticks:{callback:function(v){return v>=1e6?'$'+(v/1e6).toFixed(1)+'M':'$'+v.toLocaleString();},font:{size:11},color:'#888'}, grid:{color:'rgba(0,0,0,0.05)'} },
+            y:{ stacked:true, ticks:{font:{size:12},color:'#555'}, grid:{display:false} }
+          }
+        }
+      });
+    }
+
+    ['commitments','feeRate','q1Days','invested','distTotal','lpCapital','prefReturn'].forEach(initInput);
+    calcFee();
+  </script>
+</body>
+</html>
